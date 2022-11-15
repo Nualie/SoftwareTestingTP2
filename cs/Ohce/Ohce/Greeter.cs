@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+
 public class Greeter 
 {
     private GiveHour sClock;
