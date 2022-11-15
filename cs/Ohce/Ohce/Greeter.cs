@@ -1,17 +1,19 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-public class Greeter
+public class Greeter 
 {
-    private readonly OsClock _clock;
-    public Greeter()
+    private GiveHour sClock;
+    public Greeter(GiveHour sClock)
     {
-        _clock = new OsClock();   
+        this.sClock = sClock;
     }
+
+
 
     public string Greet()
     {
-        int hour = _clock.GetCurrentHour();
+        int hour = sClock.GetCurrentHour();
         return hour switch
         {
             (>=6) and (< 12) => "Good morning",
@@ -22,3 +24,23 @@ public class Greeter
         };
     }
 }
+
+
+public interface GiveHour
+{
+    public int GetCurrentHour();
+}
+
+
+public class Return_Oclock : GiveHour
+{
+    private readonly OsClock _clock;
+    public Return_Oclock()
+    {
+        _clock = new OsClock();
+    }
+    public int GetCurrentHour() { return _clock.GetCurrentHour(); }
+}
+public class Return_9_Oclock : GiveHour { public int GetCurrentHour() { return 9; } }
+public class Return_16_Oclock : GiveHour { public int GetCurrentHour() { return 16; } }
+public class Return_0_Oclock : GiveHour { public int GetCurrentHour() { return 0; } }
