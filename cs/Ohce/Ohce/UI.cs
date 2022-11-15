@@ -2,36 +2,37 @@
 {
     public class UI
     {
-        private readonly messageInput _interactor;
+        private readonly MessageInput _interactor;
 
-        public UI(messageInput input)
+
+        public UI(MessageInput input)
         {
             _interactor = input;
         }
 
-        public string Main()
-        {
-            string? input = _interactor.ReadInput();
-            if (input == null || input.Equals("quit"))
-            {
-                return "quit";
-            }
-            string reversed = StringReverser.reverse(input);
-            _interactor.PrintMessage(reversed);
-            if (reversed.Equals(input))
-            {
-                _interactor.PrintMessage("That was a palindrom!");
-            }
-            return reversed;
-        }
+       
 
         public void MainLoop()
         {
-            while (!(Main() == "quit")) ;
+            while (true)
+            {
+                string? input = _interactor.ReadInput();
+                if (input == null || input.Equals("quit"))
+                {
+                    break;
+                }
+                string reversed = StringReverser.reverse(input);
+                _interactor.PrintMessage(reversed);
+                if (reversed.Equals(input))
+                {
+                    _interactor.PrintMessage("That was a palindrom!");
+                }
+                
+            }
            
         }
     }
-    public interface messageInput
+    public interface MessageInput
     {
         public string ReadInput();
         public void PrintMessage(string str);
@@ -39,16 +40,15 @@
 
     }
 
-    public class Interactor : messageInput
+    public class Interactor : MessageInput
     {
         private readonly ConsoleInteractor? input;
+
         public string ReadInput()
         {
             if(input?.ReadInput() != null)
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 return input.ReadInput();
-#pragma warning restore CS8603 // Possible null reference return.
             }
             return "";
         }
@@ -59,43 +59,43 @@
         }
     }
 
-    //stub hello
-    public class send_hello : messageInput 
+    //stub sequence
+
+    public class SpyInteractor : MessageInput
     {
-        public void PrintMessage(string str)
+        private List<string> input;
+        private List<String> attempts = new List<string>();
+
+        public static SpyInteractor Instance { get; private set; }
+
+        public SpyInteractor(List<string> input)
         {
-            Console.WriteLine(str);
+            this.input = input;
+            Instance = this;
         }
 
         public string ReadInput()
         {
-            return "hello";
-        }
-    }
-
-    public class send_oto : messageInput
-    {
-        public void PrintMessage(string str)
-        {
-            Console.WriteLine(str);
-        }
-
-        public string ReadInput()
-        {
-            return "oto";
-        }
-    }
-
-    public class send_quit : messageInput
-    {
-        public void PrintMessage(string str)
-        {
-            Console.WriteLine(str);
-        }
-
-        public string ReadInput()
-        {
+            if (input.Count > 0)
+            {
+                string str = input[0];
+                input.RemoveAt(0);
+                return str;
+            }
             return "quit";
         }
+
+        public void PrintMessage(string str)
+        {
+            attempts.Add(str);
+            Console.WriteLine(str);
+        }
+
+        public List<string> getAttempts()
+        {
+            return attempts;
+        }
+
+
     }
 }

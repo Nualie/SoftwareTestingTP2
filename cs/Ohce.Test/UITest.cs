@@ -5,12 +5,12 @@
         [Test]
         public void MainLoopExample()
         {
-            UI ui = new UI(new send_hello());
-            Assert.That(ui.Main(), Is.EqualTo("olleh"));
-            ui = new UI(new send_oto());
-            Assert.That(ui.Main(), Is.EqualTo("oto"));
-            ui = new UI(new send_quit());
-            Assert.That(ui.Main(), Is.EqualTo("quit"));
+            List<String> inputList = new List<String> { "hello", "oto", "quit" };
+            List<String> outputList = new List<String> { "olleh", "oto", "That was a palindrom!" };
+
+            UI ui = new UI(new SpyInteractor(inputList));
+            ui.MainLoop();
+            Assert.That(SpyInteractor.Instance.getAttempts(), Is.EqualTo(outputList));
         }
 
 
